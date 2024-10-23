@@ -8,20 +8,24 @@ using Unity.MLAgents.Sensors;
 public class MoveToTargetAgent : Agent
 {
 
-
+     
     [SerializeField] private Transform target;
+    [SerializeField] private Transform env;
     [SerializeField] private SpriteRenderer backgroundSpriteRenderer;
 
     public override void OnEpisodeBegin()
     {
-        transform.position = new Vector3(Random.Range(-3.5f, -1.5f), Random.Range(-3.5f, 3.5f));
-        target.position = new Vector3(Random.Range(1.5f, 3.5f), Random.Range(-3.5f, 3.5f));
+        target.localPosition = new Vector3(Random.Range(-3.5f, -1.5f), Random.Range(-3.5f, 3.5f));
+        transform.localPosition = new Vector3(Random.Range(1.5f, 3.5f), Random.Range(-3.5f, 3.5f));
+
+        env.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+        transform.rotation = Quaternion.identity;
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation((Vector2)transform.position);
-        sensor.AddObservation((Vector2)transform.position);
+        sensor.AddObservation((Vector2)transform.localPosition);
+        sensor.AddObservation((Vector2)transform.localPosition);
     }
 
 
@@ -29,9 +33,9 @@ public class MoveToTargetAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         float moveX = actions.ContinuousActions[0];
-        float moveY = actions.ContinuousActions[1];
+        float moveY = actions.ContinuousActions[1]; 
 
-        float movementSpeed = 5f;
+        float movementSpeed = 15f;
 
         transform.localPosition += new Vector3(moveX, moveY) * Time.deltaTime * movementSpeed;
     }
